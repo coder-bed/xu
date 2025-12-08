@@ -1,27 +1,54 @@
-name: Deploy to GitHub Pages
+name: Deploy Vue 3 to GitHub Pages
 
 on:
     push:
-        branches: [main] # 触发部署的分支
+        branches: [main] # 主分支推送触发
+    workflow_dispatch: # 支持手动触发（可选）
 
 jobs:
     deploy:
         runs-on: ubuntu-latest
         permissions:
-            id-token: write # 允许生成 OIDC Token
-            contents: read # 默认权限（可选，按需调整）
+            id-token: write # 部署认证必需
+            contents: read # 读取仓库内容
         steps:
+            # 1. 检出代码
             - uses: actions/checkout@v4
 
-            - name: Setup Pages
-              uses: actions/configure-pages@v3
+            # 2. 设置 Node.js 环境（指定 LTS 版本，兼容 Vue 3）
+            - name: Setup Node.js
+              uses: actions/setup-node@v4
+              with:
+                  node-version: 'lts/*' # 自动使用最新 LTS 版本（如 Node 20）
+                  cache: 'npm' # 缓存 npm 依赖（加速下次构建）
 
-            - name: Upload artifact
+            # 3. 安装依赖（使用 npm ci 更稳定，基于 package-lock.json）
+            - name: Install Dependencies
+              run: npm ci
+
+            # 4. 构建 Vue 3 项目（生成 dist/ 目录）
+            - name: Build Project
+              run: npm run build
+
+            # 5. 兼容 Vue Router History 模式（可选，若使用 History 模式则必须）
+            - name: Handle History Mode (Optional)
+              if: always() # 即使构建失败也执行（避免部署错误）
+              run: |
+                  # 复制 index.html 为 404.html，解决 History 模式刷新 404 问题
+                  cp dist/index.html dist/404.html
+
+            # 6. 配置 GitHub Pages 环境
+            - name: Configure Pages
+              uses: actions/configure-pages@v4
+
+            # 7. 上传构建产物作为部署制品
+            - name: Upload Artifact
               uses: actions/upload-artifact@v4
               with:
-                  name: my-artifact
-                  path: docs/ # 你的构建输出目录
+                  name: vue3-site # 制品名称（自定义）
+                  path: dist/ # Vue 3 构建输出目录
 
+            # 8. 部署到 GitHub Pages
             - name: Deploy to GitHub Pages
               id: deployment
-              uses: actions/deploy-pages@v2
+              uses: actions/deploy-pages@v4 # 最新稳定版，支持 OIDC 认证
