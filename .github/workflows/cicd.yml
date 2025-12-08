@@ -45,7 +45,7 @@ jobs:
             - name: Upload Artifact
               uses: actions/upload-artifact@v4
               with:
-                  name: vue3-site # 制品名称（自定义）
+                  name: github-pages # 制品名称（自定义）
                   path: dist/ # Vue 3 构建输出目录
 
             # 8. 部署到 GitHub Pages
