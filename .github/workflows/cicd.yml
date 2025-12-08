@@ -20,7 +20,7 @@ jobs:
               uses: actions/upload-artifact@v4
               with:
                   name: my-artifact
-                  path: dist/ # 你的构建输出目录
+                  path: docs/ # 你的构建输出目录
 
             - name: Deploy to GitHub Pages
               id: deployment
