@@ -11,6 +11,7 @@ jobs:
         permissions:
             id-token: write # 部署认证必需
             contents: read # 读取仓库内容
+            pages: write
         steps:
             # 1. 检出代码
             - uses: actions/checkout@v4
