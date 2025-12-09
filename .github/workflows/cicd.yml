@@ -40,7 +40,7 @@ jobs:
 
             # 7. 上传构建产物作为部署制品
             - name: Upload Artifact
-              uses: actions/upload-artifact@v3
+              uses: actions/upload-artifact@v4
               with:
                   name: github-pages # 制品名称（自定义）
                   path: dist/ # Vue 3 构建输出目录
