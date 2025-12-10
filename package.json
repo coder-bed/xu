@@ -11,7 +11,7 @@
 		"lint:eslint": "eslint",
 		"lint": "npm run lint:prettier && npm run lint:eslint",
 		"commitlint": "commitlint --edit",
-		"commit": "git-cz",
+		"cm": "git-cz",
 		"lint-staged": "lint-staged",
 		"prepare": "husky"
 	},
